@@ -31,7 +31,7 @@ london_dt = loc_dt.astimezone(london_tz)
 # >>> london_dt
 # datetime.datetime(2018, 5, 15, 20, 34, tzinfo=<DstTzInfo 'Europe/London' BST+1:00:00 DST>)
 f = '%Y-%m-%d %H:%M:%S %Z%z'
-datetime.datetime(2018, 5, 12, 12, 15, 0, tzinfo = london_tz).strftime(f)
+datetime.datetime(2018, 5, 12, 12, 15, 0, tzinfo=london_tz).strftime(f)
 ## '2018-05-12 12:15:00 LMT-0001'
 ## as highlighted in the pytz documentation using the tzinfo of the datetime.datetime initializer does not always lead to the desired outcome
 ## such as with the London
@@ -39,25 +39,28 @@ datetime.datetime(2018, 5, 12, 12, 15, 0, tzinfo = london_tz).strftime(f)
 
 # generally you want to store data in UTC and convert only when generating human readable output
 # you can also do date arithmetic with time zones
-event1 = datetime.datetime(2018, 5, 12, 12, 15, 0, tzinfo = london_tz)
-event2 = datetime.datetime(2018, 5, 13, 9, 15, 0, tzinfo = western)
+event1 = datetime.datetime(2018, 5, 12, 12, 15, 0, tzinfo=london_tz)
+event2 = datetime.datetime(2018, 5, 13, 9, 15, 0, tzinfo=western)
 event2 - event1
 ## this will yield the wrong time delta because the time zones haven't been labelled properly
 
 
-event1 = london_tz.localize( datetime.datetime(2018, 5, 12, 12, 15, 0))
+event1 = london_tz.localize(datetime.datetime(2018, 5, 12, 12, 15, 0))
 event2 = western.localize(datetime.datetime(2018, 5, 13, 9, 15, 0))
 event2 - event1
 
 
-
-event1 = london_tz.localize((datetime.datetime(2018, 5, 12, 12, 15, 0))).astimezone(datetime.timezone.utc)
-event2 = western.localize(datetime.datetime(2018, 5, 13, 9, 15, 0)).astimezone(datetime.timezone.utc)
+event1 = london_tz.localize(
+    (datetime.datetime(2018, 5, 12, 12, 15, 0))
+).astimezone(datetime.timezone.utc)
+event2 = western.localize(datetime.datetime(2018, 5, 13, 9, 15, 0)).astimezone(
+    datetime.timezone.utc
+)
 event2 - event1
 
 ## note that in the event you are working on dates for arithmetic that could corss daylight savings time boundaries
 ## you also need to apply the normalize function for your time zone
-event1 = london_tz.localize( datetime.datetime(2018, 5, 12, 12, 15, 0))
+event1 = london_tz.localize(datetime.datetime(2018, 5, 12, 12, 15, 0))
 event2 = western.localize(datetime.datetime(2018, 5, 13, 9, 15, 0))
 
 ## have a look at pytz.common_timezones
@@ -73,7 +76,9 @@ pytz.country_timezones('RU')
 
 
 ## time zones
-ambig_time = western.localize(datetime.datetime(2002, 10, 27, 1, 30, 00)).astimezone(datetime.timezone.utc)
+ambig_time = western.localize(
+    datetime.datetime(2002, 10, 27, 1, 30, 00)
+).astimezone(datetime.timezone.utc)
 ambig_time_earlier = ambig_time - datetime.timedelta(hours=1)
 ambig_time_later = ambig_time + datetime.timedelta(hours=1)
 ambig_time_earlier.astimezone(western)
@@ -86,7 +91,9 @@ ambig_time_later.astimezone(western)
 # notice that the last two timestamps are identical, no good!
 
 ## in this case you need to use is_dst to indicate whether daylight savings is in effect
-ambig_time = western.localize(datetime.datetime(2002, 10, 27, 1, 30, 00), is_dst = True).astimezone(datetime.timezone.utc)
+ambig_time = western.localize(
+    datetime.datetime(2002, 10, 27, 1, 30, 00), is_dst=True
+).astimezone(datetime.timezone.utc)
 ambig_time_earlier = ambig_time - datetime.timedelta(hours=1)
 ambig_time_later = ambig_time + datetime.timedelta(hours=1)
 ambig_time_earlier.astimezone(western)
